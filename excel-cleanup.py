@@ -3,35 +3,42 @@ from openpyxl.utils import get_column_letter
 wb = load_workbook('data.xlsx')
 site_sheet = wb['Site']
 
+zipCol = get_column_letter(site_sheet.max_column + 4)
+stateCol = get_column_letter(site_sheet.max_column + 3)
+cityCol = get_column_letter(site_sheet.max_column + 2)
+addressCol = get_column_letter(site_sheet.max_column + 1)
+
 for cellindex, cell in enumerate(site_sheet['D']): #hard-code find address
     address = cell.value
     addressArray = address.split()
-    print(address)
+   # print(address)
     for index, word in enumerate(addressArray):
     	word = word.strip(',')
     	word = word.strip('.')
     	addressArray[index] = word
     for i, partOfAdd in enumerate(addressArray): #site_sheet.max_column
-    	zipCol = get_column_letter(site_sheet.max_column + 4)
-    	stateCol = get_column_letter(site_sheet.max_column + 3)
-    	cityCol = get_column_letter(site_sheet.max_column + 2)
-    	addressCol = get_column_letter(site_sheet.max_column + 1)
     	if i==len(addressArray) - 1:
     		#partOfAdd will have updated to be zip
     		site_sheet[zipCol + str(cellindex + 1)] = partOfAdd
-    		print(partOfAdd)
-    		print("zipCol " + str(zipCol))
+    		# print(zipCol + str(cellindex + 1))
+    		# print(partOfAdd)
+    		# print("zipCol " + str(zipCol))
     	elif i==len(addressArray) - 2:
     		#will be state
     		site_sheet[stateCol + str(cellindex + 1)] = partOfAdd
-    		print(partOfAdd)
-    		print("stateCol " + str(stateCol))
+    		# print(stateCol + str(cellindex + 1))
+    		# print(partOfAdd)
+    		# print("stateCol " + str(stateCol))
     	elif i==len(addressArray) - 3:
     		#will be city
     		site_sheet[cityCol + str(cellindex + 1)] = partOfAdd
-    		print(partOfAdd)
-    		print("cityCol " + str(cityCol))
+    		# print(cityCol + str(cellindex + 1))
+    		#print(partOfAdd)
+    		#print("cityCol " + str(cityCol))
     streetAd = addressArray[0]
     for word in addressArray[1:len(addressArray) - 3]:
     	streetAd += " " + word
     site_sheet[addressCol + str(cellindex + 1)] = streetAd
+    # print(addressCol + str(cellindex + 1))
+
+wb.save('ndata.xlsx')

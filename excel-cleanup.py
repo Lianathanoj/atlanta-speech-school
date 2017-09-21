@@ -1,9 +1,17 @@
 # import pandas as pd
+import tkinter as tk
+from tkinter import Tk
+from os import getcwd
 from geocoder import google
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
+from tkinter.filedialog import askopenfilename
 
-wb = load_workbook('data - Copy.xlsx')
+root = Tk()
+root.withdraw()
+file_name = askopenfilename(initialdir=getcwd(), title="Select an Excel file.",
+                            filetypes=[("Microsoft Excel Worksheet", ".xlsx")])
+wb = load_workbook(file_name)
 site_sheet = wb['Site']
 
 def find_address_column():
@@ -26,14 +34,14 @@ def cell_operations():
             lat, long = latlng[0], latlng[1]
             site_sheet[new_column_letter + str(index + 1)] = str(lat) + ', ' + str(long)
         except ValueError:
-            print('test')
+            print('Could not read address correctly.')
             cell_errors.append((cell, cell.value))
     site_sheet[new_column_letter + '1'] = "Latitude/Longitude"
 
     print("These addresses could not be converted to latitude-longitude coordinates.")
     print(cell_errors)
 
-    wb.save('test.xlsx')
+    wb.save(file_name + '_MODIFIED')
 
 if __name__ == '__main__':
     cell_operations()

@@ -25,10 +25,7 @@ def cell_operations():
     latitude_column_letter = get_column_letter(site_sheet.max_column + 1)
     longitude_column_letter = get_column_letter(site_sheet.max_column + 2)
     for index, cell in enumerate(site_sheet[address_column]):
-        # print(cell.value)
         try:
-            # print(cell, google(cell.value).latlng)
-            # print(new_column_letter + str(index + 1))
             latlng = google(cell.value).latlng
             lat, long = latlng[0], latlng[1]
             site_sheet[latitude_column_letter + str(index + 1)] = lat
@@ -48,4 +45,3 @@ def cell_operations():
 
 if __name__ == '__main__':
     cell_operations()
-    # print()

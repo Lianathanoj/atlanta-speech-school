@@ -1,3 +1,4 @@
+from time import sleep
 from tkinter import Tk
 from os import getcwd, path
 from geocoder import google
@@ -12,6 +13,7 @@ file_path = askopenfilename(initialdir=getcwd(), title="Select an Excel file.",
 wb = load_workbook(file_path)
 site_sheet = wb['Site']
 cell_errors = []
+num_error_checks = 5
 
 # Get columns letters
 longCol = get_column_letter(site_sheet.max_column + 6)
@@ -22,9 +24,9 @@ cityCol = get_column_letter(site_sheet.max_column + 2)
 addressCol = get_column_letter(site_sheet.max_column + 1)
 
 def set_modified_titles():
-    site_sheet[longCol + '1'] = "Latitude"
-    site_sheet[latCol + '1'] = "Longitude"
-    site_sheet[zipCol + '1'] = "Address"
+    site_sheet[longCol + '1'] = "Longitude"
+    site_sheet[latCol + '1'] = "Latitude"
+    site_sheet[zipCol + '1'] = "Zip Code"
     site_sheet[stateCol + '1'] = "State"
     site_sheet[cityCol + '1'] = "City"
     site_sheet[addressCol + '1'] = "Modified Site Address"
@@ -76,22 +78,34 @@ def cell_operations():
                 streetAd += " " + word
                 site_sheet[addressCol + str(cellindex + 2)] = streetAd
 
-        # Lat/Long Operations
-        try:
-            latlng = google(cell.value).latlng
-            lat, long = latlng[0], latlng[1]
-            site_sheet[latCol + str(cellindex + 2)] = lat
-            site_sheet[longCol + str(cellindex + 2)] = long
-        except ValueError:
-            print('Could not read address correctly.')
-            cell_errors.append((cell, cell.value))
-
-    print("These addresses could not be converted to latitude-longitude coordinates.")
-    print(cell_errors)
+        for i in range(1, num_error_checks + 1):
+            try:
+                if lat_long_conversion(cell.value, cellindex):
+                    break
+            except Exception:
+                # try again for three times to make sure the error wasn't on Google's end
+                # (e.g. internal server error, 500 status)
+                if i == num_error_checks:
+                    print('Could not read address correctly after ' + str(num_error_checks) + ' tries.')
+                    cell_errors.append((cell, cell.value))
+                else:
+                    print("Could not read address correctly. Trying again.")
+    if len(cell_errors) > 0:
+        print("These addresses could not be converted to latitude-longitude coordinates.")
+        print(cell_errors)
 
     file_name = path.basename(file_path)
     index = file_name.find(".xlsx")
     wb.save(file_name[:index] + '_MODIFIED' + file_name[index:])
+
+def lat_long_conversion(cell_value, cell_index):
+    # add sleep time to not throttle api with request and to prevent query limits per second
+    sleep(0.1)
+    latlng = google(cell_value).latlng
+    lat, long = latlng[0], latlng[1]
+    site_sheet[latCol + str(cell_index + 2)] = lat
+    site_sheet[longCol + str(cell_index + 2)] = long
+    return latlng
 
 if __name__ == '__main__':
     set_modified_titles()

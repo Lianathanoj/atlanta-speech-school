@@ -101,7 +101,10 @@ def cell_operations():
 def lat_long_conversion(cell_value, cell_index):
     # add sleep time to not throttle api with request and to prevent query limits per second
     sleep(0.1)
-    latlng = google(cell_value).latlng
+    ggl = google(cell_value)
+    cityName = ggl.city
+    site_sheet[cityCol + str(cell_index + 2)] = cityName
+    latlng = ggl.latlng
     lat, long = latlng[0], latlng[1]
     site_sheet[latCol + str(cell_index + 2)] = lat
     site_sheet[longCol + str(cell_index + 2)] = long

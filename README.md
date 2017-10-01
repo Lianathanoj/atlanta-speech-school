@@ -9,7 +9,7 @@ There are two ways to run this script:
 * **Easy Use:** Double click the `excel-cleanup.exe` file. When an input window pops up, choose the excel spreadsheet that needs to be cleaned up.
 * **Technical:** There are a couple of dependencies that need to be installed, which can be done by running `pip install -r requirements.txt`. Once all of the dependencies have been installed, run `python excel-cleanup.py`. This will open up the input window, into which you can input a file.
 
-After running the script, a new file called `Data_MODIFIED.xlsx` will be created, containing geocoded, properly formatted data for use with Tableau. Now, simply import this file into Tableau, and you're done!
+After running the script, a new file called `Data_MODIFIED.xlsx` will be created, containing geocoded, properly formatted data for use with Tableau. Now, simply import this file into Tableau as shown in [this video](https://youtu.be/fLCi3JpKvJQ), and you're done!
 
 ### For Developers
 If you need to modify anything in the script, make sure to recreate the `.exe` file with [Pyinstaller](http://www.pyinstaller.org/).

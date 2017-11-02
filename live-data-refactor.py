@@ -8,7 +8,7 @@ from tkinter.filedialog import askopenfilename
 
 root = Tk()
 root.withdraw()
-file_path = askopenfilename(initialdir=getcwd(), title="Select an Excel file.",
+file_path = askopenfilename(initialdir=getcwd(), title="Select an Excel file to represent live data.",
                             filetypes=[("Microsoft Excel Worksheet", ".xlsx")])
 wb = load_workbook(file_path)
 site_sheet = wb['Site']
